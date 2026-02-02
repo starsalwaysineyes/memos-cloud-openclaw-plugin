@@ -9,7 +9,25 @@
 - **Add**：`agent_end` → `/add/message`
 - 使用 **Token** 认证（`Authorization: Token <MEMOS_API_KEY>`）
 
-## 本地安装
+## 安装
+
+### 方式 A — GitHub（与之前插件一致）
+```bash
+openclaw plugins install github:starsalwaysineyes/memos-cloud-openclaw-plugin
+openclaw gateway restart
+```
+确认 `~/.openclaw/openclaw.json` 中已启用：
+```json
+{
+  "plugins": {
+    "entries": {
+      "memos-cloud-memory": { "enabled": true }
+    }
+  }
+}
+```
+
+### 方式 B — 本地路径
 把本目录放到 OpenClaw 插件路径（如 `~/.openclaw/extensions/`），或用 `plugins.load.paths` 指向它。
 
 示例 `~/.openclaw/openclaw.json`：

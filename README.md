@@ -7,7 +7,25 @@ A minimal OpenClaw lifecycle plugin that **recalls** memories from MemOS Cloud b
 - **Add**: `agent_end` → `/add/message`
 - Uses **Token** auth (`Authorization: Token <MEMOS_API_KEY>`)
 
-## Install (local)
+## Install
+
+### Option A — GitHub (same as the previous plugin)
+```bash
+openclaw plugins install github:starsalwaysineyes/memos-cloud-openclaw-plugin
+openclaw gateway restart
+```
+Make sure it’s enabled in `~/.openclaw/openclaw.json`:
+```json
+{
+  "plugins": {
+    "entries": {
+      "memos-cloud-memory": { "enabled": true }
+    }
+  }
+}
+```
+
+### Option B — Local path
 Copy this folder into an OpenClaw plugin path (e.g. `~/.openclaw/extensions/`) or use `plugins.load.paths` to point at it.
 
 Example `~/.openclaw/openclaw.json`:

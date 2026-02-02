@@ -53,7 +53,6 @@ openclaw gateway restart
 **最小配置**
 ```env
 MEMOS_API_KEY=YOUR_TOKEN
-MEMOS_USER_ID=openclaw-user
 ```
 
 **可选配置**

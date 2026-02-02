@@ -51,7 +51,6 @@ Restart the gateway after config changes.
 **Minimal config**
 ```env
 MEMOS_API_KEY=YOUR_TOKEN
-MEMOS_USER_ID=openclaw-user
 ```
 
 **Optional config**

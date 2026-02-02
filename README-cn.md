@@ -49,6 +49,10 @@ openclaw gateway restart
 - `MEMOS_API_KEY`（必填，Token 认证）
 - `MEMOS_USER_ID`（可选，默认 `openclaw-user`）
 - `MEMOS_CONVERSATION_ID`（可选覆盖）
+- `MEMOS_RECALL_GLOBAL`（默认 `true`；为 true 时检索不传 conversation_id）
+- `MEMOS_CONVERSATION_PREFIX` / `MEMOS_CONVERSATION_SUFFIX`（可选）
+- `MEMOS_CONVERSATION_SUFFIX_MODE`（`none` | `counter`，默认 `none`）
+- `MEMOS_CONVERSATION_RESET_ON_NEW`（默认 `true`，需 hooks.internal.enabled）
 
 ## 可选插件配置
 在 `plugins.entries.memos-cloud-openclaw-plugin.config` 中设置：
@@ -60,9 +64,14 @@ openclaw gateway restart
   "conversationId": "openclaw-main",
   "queryPrefix": "important user context preferences decisions ",
   "recallEnabled": true,
+  "recallGlobal": true,
   "addEnabled": true,
   "captureStrategy": "last_turn",
   "includeAssistant": true,
+  "conversationIdPrefix": "",
+  "conversationIdSuffix": "",
+  "conversationSuffixMode": "none",
+  "resetOnNew": true,
   "memoryLimitNumber": 6,
   "preferenceLimitNumber": 6,
   "includePreference": true,
@@ -77,6 +86,7 @@ openclaw gateway restart
 ### 1) 召回（before_agent_start）
 - 组装 `/search/memory` 请求
   - `user_id`、`query`（= prompt + 可选前缀）
+  - 默认**全局召回**：`recallGlobal=true` 时不传 `conversation_id`
   - 可选 `filter` / `knowledgebase_ids`
 - 将召回的事实 / 偏好 / 工具记忆格式化成块
 - 通过 `prependContext` 注入到系统 prompt
@@ -90,6 +100,7 @@ openclaw gateway restart
 
 ## 说明
 - 未显式指定 `conversation_id` 时，默认使用 OpenClaw `sessionKey`。**TODO**：后续考虑直接绑定 OpenClaw `sessionId`。
+- 可配置前后缀；`conversationSuffixMode=counter` 时会在 `/new` 递增（需 `hooks.internal.enabled`）。
 - 如果同时启用 lifecycle 与 hooks，会出现 **重复注入/重复写入**
 
 ---

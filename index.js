@@ -7,14 +7,29 @@ import {
 } from "./lib/memos-cloud-api.js";
 
 let lastCaptureTime = 0;
+const conversationCounters = new Map();
+
+function getCounterSuffix(sessionKey) {
+  if (!sessionKey) return "";
+  const current = conversationCounters.get(sessionKey) ?? 0;
+  return current > 0 ? `#${current}` : "";
+}
+
+function bumpConversationCounter(sessionKey) {
+  if (!sessionKey) return;
+  const current = conversationCounters.get(sessionKey) ?? 0;
+  conversationCounters.set(sessionKey, current + 1);
+}
 
 function resolveConversationId(cfg, ctx) {
   if (cfg.conversationId) return cfg.conversationId;
   // TODO: consider binding conversation_id directly to OpenClaw sessionId (prefer ctx.sessionId).
-  if (ctx?.sessionKey) return ctx.sessionKey;
-  if (ctx?.sessionId) return ctx.sessionId;
-  if (ctx?.agentId) return `openclaw:${ctx.agentId}`;
-  return `openclaw-${Date.now()}`;
+  const base = ctx?.sessionKey || ctx?.sessionId || (ctx?.agentId ? `openclaw:${ctx.agentId}` : "");
+  const dynamicSuffix = cfg.conversationSuffixMode === "counter" ? getCounterSuffix(ctx?.sessionKey) : "";
+  const prefix = cfg.conversationIdPrefix || "";
+  const suffix = cfg.conversationIdSuffix || "";
+  if (base) return `${prefix}${base}${dynamicSuffix}${suffix}`;
+  return `${prefix}openclaw-${Date.now()}${dynamicSuffix}${suffix}`;
 }
 
 function buildSearchPayload(cfg, prompt, ctx) {
@@ -26,8 +41,10 @@ function buildSearchPayload(cfg, prompt, ctx) {
     query,
   };
 
-  const conversationId = resolveConversationId(cfg, ctx);
-  if (conversationId) payload.conversation_id = conversationId;
+  if (!cfg.recallGlobal) {
+    const conversationId = resolveConversationId(cfg, ctx);
+    if (conversationId) payload.conversation_id = conversationId;
+  }
 
   if (cfg.filter) payload.filter = cfg.filter;
   if (cfg.knowledgebaseIds?.length) payload.knowledgebase_ids = cfg.knowledgebaseIds;
@@ -126,6 +143,24 @@ export default {
   register(api) {
     const cfg = buildConfig(api.pluginConfig);
     const log = api.logger ?? console;
+
+    if (cfg.conversationSuffixMode === "counter" && cfg.resetOnNew) {
+      if (api.config?.hooks?.internal?.enabled !== true) {
+        log.warn?.("[memos-cloud] command:new hook requires hooks.internal.enabled = true");
+      }
+      api.registerHook(
+        ["command:new"],
+        (event) => {
+          if (event?.type === "command" && event?.action === "new") {
+            bumpConversationCounter(event.sessionKey);
+          }
+        },
+        {
+          name: "memos-cloud-conversation-new",
+          description: "Increment MemOS conversation suffix on /new",
+        },
+      );
+    }
 
     api.on("before_agent_start", async (event, ctx) => {
       if (!cfg.recallEnabled) return;

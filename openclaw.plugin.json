@@ -12,9 +12,18 @@
       "apiKey": { "type": "string", "description": "MemOS API Key (Token auth; supports ~/.openclaw/.env)" },
       "userId": { "type": "string", "description": "MemOS user_id (default: openclaw-user)", "default": "openclaw-user" },
       "conversationId": { "type": "string", "description": "Override conversation_id" },
+      "conversationIdPrefix": { "type": "string", "description": "conversation_id prefix" },
+      "conversationIdSuffix": { "type": "string", "description": "conversation_id suffix" },
+      "conversationSuffixMode": {
+        "type": "string",
+        "enum": ["none", "counter"],
+        "default": "none"
+      },
+      "resetOnNew": { "type": "boolean", "default": true },
       "queryPrefix": { "type": "string", "description": "Prefix added to search queries" },
       "maxQueryChars": { "type": "integer", "description": "Max chars for search query" },
       "recallEnabled": { "type": "boolean", "default": true },
+      "recallGlobal": { "type": "boolean", "default": true },
       "addEnabled": { "type": "boolean", "default": true },
       "captureStrategy": {
         "type": "string",

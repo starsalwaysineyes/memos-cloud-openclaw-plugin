@@ -47,6 +47,10 @@ Restart the gateway after config changes.
 - `MEMOS_API_KEY` (required; Token auth)
 - `MEMOS_USER_ID` (optional; default: `openclaw-user`)
 - `MEMOS_CONVERSATION_ID` (optional override)
+- `MEMOS_RECALL_GLOBAL` (default: `true`; when true, search does **not** pass conversation_id)
+- `MEMOS_CONVERSATION_PREFIX` / `MEMOS_CONVERSATION_SUFFIX` (optional)
+- `MEMOS_CONVERSATION_SUFFIX_MODE` (`none` | `counter`, default: `none`)
+- `MEMOS_CONVERSATION_RESET_ON_NEW` (default: `true`, requires hooks.internal.enabled)
 
 ## Optional Plugin Config
 In `plugins.entries.memos-cloud-openclaw-plugin.config`:
@@ -58,9 +62,14 @@ In `plugins.entries.memos-cloud-openclaw-plugin.config`:
   "conversationId": "openclaw-main",
   "queryPrefix": "important user context preferences decisions ",
   "recallEnabled": true,
+  "recallGlobal": true,
   "addEnabled": true,
   "captureStrategy": "last_turn",
   "includeAssistant": true,
+  "conversationIdPrefix": "",
+  "conversationIdSuffix": "",
+  "conversationSuffixMode": "none",
+  "resetOnNew": true,
   "memoryLimitNumber": 6,
   "preferenceLimitNumber": 6,
   "includePreference": true,
@@ -74,6 +83,7 @@ In `plugins.entries.memos-cloud-openclaw-plugin.config`:
 ## How it Works
 - **Recall** (`before_agent_start`)
   - Builds a `/search/memory` request using `user_id`, `query` (= prompt + optional prefix), and optional filters.
+  - Default **global recall**: when `recallGlobal=true`, it does **not** pass `conversation_id`.
   - Formats facts/preferences/tools into a context block, then injects via `prependContext`.
 
 - **Add** (`agent_end`)
@@ -81,7 +91,8 @@ In `plugins.entries.memos-cloud-openclaw-plugin.config`:
   - Sends `messages` with `user_id`, `conversation_id`, and optional `tags/info/agent_id/app_id`.
 
 ## Notes
-- `conversation_id` is derived from OpenClaw `sessionKey` when not set explicitly. **TODO**: consider binding to OpenClaw `sessionId` directly.
+- `conversation_id` defaults to OpenClaw `sessionKey` (unless `conversationId` is provided). **TODO**: consider binding to OpenClaw `sessionId` directly.
+- Optional **prefix/suffix** via env or config; `conversationSuffixMode=counter` increments on `/new` (requires `hooks.internal.enabled`).
 - When both lifecycle and hooks are enabled for memory, you may get **duplicate** injection/writes.
 
 ---

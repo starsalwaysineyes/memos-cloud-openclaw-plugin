@@ -144,6 +144,10 @@ export default {
     const cfg = buildConfig(api.pluginConfig);
     const log = api.logger ?? console;
 
+    if (cfg.envFileMissing) {
+      log.warn?.("[memos-cloud] ~/.openclaw/.env not found; set MEMOS_* env or plugin config.");
+    }
+
     if (cfg.conversationSuffixMode === "counter" && cfg.resetOnNew) {
       if (api.config?.hooks?.internal?.enabled !== true) {
         log.warn?.("[memos-cloud] command:new hook requires hooks.internal.enabled = true");

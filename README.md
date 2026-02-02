@@ -9,7 +9,7 @@ A minimal OpenClaw lifecycle plugin that **recalls** memories from MemOS Cloud b
 
 ## Install
 
-### Option A — GitHub (same as the previous plugin)
+### Option A — GitHub
 ```bash
 openclaw plugins install github:starsalwaysineyes/memos-cloud-openclaw-plugin
 openclaw gateway restart
@@ -44,7 +44,7 @@ Restart the gateway after config changes.
 ## Environment Variables
 > Also supports reading from `~/.openclaw/.env` when not present in the process env.
 - `MEMOS_BASE_URL` (default: `https://memos.memtensor.cn/api/openmem/v1`)
-- `MEMOS_API_KEY` (required; Token auth)
+- `MEMOS_API_KEY` (required; Token auth) — get it at https://memos-dashboard.openmem.net/cn/apikeys/
 - `MEMOS_USER_ID` (optional; default: `openclaw-user`)
 - `MEMOS_CONVERSATION_ID` (optional override)
 - `MEMOS_RECALL_GLOBAL` (default: `true`; when true, search does **not** pass conversation_id)
@@ -93,10 +93,3 @@ In `plugins.entries.memos-cloud-openclaw-plugin.config`:
 ## Notes
 - `conversation_id` defaults to OpenClaw `sessionKey` (unless `conversationId` is provided). **TODO**: consider binding to OpenClaw `sessionId` directly.
 - Optional **prefix/suffix** via env or config; `conversationSuffixMode=counter` increments on `/new` (requires `hooks.internal.enabled`).
-- When both lifecycle and hooks are enabled for memory, you may get **duplicate** injection/writes.
-
----
-
-References:
-- MemOS Cloud docs: `/Users/shiuing/Desktop/code/MemOS-Docs/content`
-- OpenClaw plugin docs: `/opt/homebrew/lib/node_modules/openclaw/docs/plugin.md`

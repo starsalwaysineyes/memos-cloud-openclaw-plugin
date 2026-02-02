@@ -11,7 +11,7 @@
 
 ## 安装
 
-### 方式 A — GitHub（与之前插件一致）
+### 方式 A — GitHub
 ```bash
 openclaw plugins install github:starsalwaysineyes/memos-cloud-openclaw-plugin
 openclaw gateway restart
@@ -46,7 +46,7 @@ openclaw gateway restart
 ## 环境变量
 > 若进程环境变量未设置，会尝试从 `~/.openclaw/.env` 读取。
 - `MEMOS_BASE_URL`（默认 `https://memos.memtensor.cn/api/openmem/v1`）
-- `MEMOS_API_KEY`（必填，Token 认证）
+- `MEMOS_API_KEY`（必填，Token 认证）—— 获取地址：https://memos-dashboard.openmem.net/cn/apikeys/
 - `MEMOS_USER_ID`（可选，默认 `openclaw-user`）
 - `MEMOS_CONVERSATION_ID`（可选覆盖）
 - `MEMOS_RECALL_GLOBAL`（默认 `true`；为 true 时检索不传 conversation_id）
@@ -101,10 +101,3 @@ openclaw gateway restart
 ## 说明
 - 未显式指定 `conversation_id` 时，默认使用 OpenClaw `sessionKey`。**TODO**：后续考虑直接绑定 OpenClaw `sessionId`。
 - 可配置前后缀；`conversationSuffixMode=counter` 时会在 `/new` 递增（需 `hooks.internal.enabled`）。
-- 如果同时启用 lifecycle 与 hooks，会出现 **重复注入/重复写入**
-
----
-
-参考：
-- MemOS Cloud 文档：`/Users/shiuing/Desktop/code/MemOS-Docs/content`
-- OpenClaw plugin 文档：`/opt/homebrew/lib/node_modules/openclaw/docs/plugin.md`

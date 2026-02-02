@@ -1,0 +1,81 @@
+# MemOS Cloud Memory（OpenClaw Lifecycle 插件）
+
+这是一个最小可用的 OpenClaw lifecycle 插件，功能是：
+- **召回记忆**：在每轮对话前从 MemOS Cloud 检索记忆并注入上下文
+- **添加记忆**：在每轮对话结束后把消息写回 MemOS Cloud
+
+## 功能
+- **Recall**：`before_agent_start` → `/search/memory`
+- **Add**：`agent_end` → `/add/message`
+- 使用 **Token** 认证（`Authorization: Token <MEMOS_API_KEY>`）
+
+## 本地安装
+把本目录放到 OpenClaw 插件路径（如 `~/.openclaw/extensions/`），或用 `plugins.load.paths` 指向它。
+
+示例 `~/.openclaw/openclaw.json`：
+```json
+{
+  "plugins": {
+    "entries": {
+      "memos-cloud-memory": { "enabled": true }
+    },
+    "load": { "paths": ["/Users/shiuing/Desktop/funcode/memos-playground-openclaw-plugin"] }
+  }
+}
+```
+修改配置后需要重启 gateway。
+
+## 环境变量
+> 若进程环境变量未设置，会尝试从 `~/.openclaw/.env` 读取。
+- `MEMOS_BASE_URL`（默认 `https://memos.memtensor.cn/api/openmem/v1`）
+- `MEMOS_API_KEY`（必填，Token 认证）
+- `MEMOS_USER_ID`（可选，默认 `openclaw-user`）
+- `MEMOS_CONVERSATION_ID`（可选覆盖）
+
+## 可选插件配置
+在 `plugins.entries.memos-cloud-memory.config` 中设置：
+```json
+{
+  "baseUrl": "https://memos.memtensor.cn/api/openmem/v1",
+  "apiKey": "YOUR_API_KEY",
+  "userId": "memos_user_123",
+  "conversationId": "openclaw-main",
+  "queryPrefix": "important user context preferences decisions ",
+  "recallEnabled": true,
+  "addEnabled": true,
+  "captureStrategy": "last_turn",
+  "includeAssistant": true,
+  "memoryLimitNumber": 6,
+  "preferenceLimitNumber": 6,
+  "includePreference": true,
+  "includeToolMemory": false,
+  "toolMemoryLimitNumber": 6,
+  "tags": ["openclaw"],
+  "asyncMode": true
+}
+```
+
+## 工作原理
+### 1) 召回（before_agent_start）
+- 组装 `/search/memory` 请求
+  - `user_id`、`query`（= prompt + 可选前缀）
+  - 可选 `filter` / `knowledgebase_ids`
+- 将召回的事实 / 偏好 / 工具记忆格式化成块
+- 通过 `prependContext` 注入到系统 prompt
+
+### 2) 添加（agent_end）
+- 默认只写**最后一轮**（user + assistant）
+- 构造 `/add/message` 请求：
+  - `user_id`、`conversation_id`
+  - `messages` 列表
+  - 可选 `tags / info / agent_id / app_id`
+
+## 说明
+- 未显式指定 `conversation_id` 时，默认使用 OpenClaw `sessionKey`。**TODO**：后续考虑直接绑定 OpenClaw `sessionId`。
+- 如果同时启用 lifecycle 与 hooks，会出现 **重复注入/重复写入**
+
+---
+
+参考：
+- MemOS Cloud 文档：`/Users/shiuing/Desktop/code/MemOS-Docs/content`
+- OpenClaw plugin 文档：`/opt/homebrew/lib/node_modules/openclaw/docs/plugin.md`

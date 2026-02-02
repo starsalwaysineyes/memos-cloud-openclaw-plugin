@@ -1,4 +1,4 @@
-# MemOS Cloud Memory (OpenClaw Lifecycle Plugin)
+# MemOS Cloud OpenClaw Plugin (Lifecycle)
 
 A minimal OpenClaw lifecycle plugin that **recalls** memories from MemOS Cloud before each run and **adds** new messages to MemOS Cloud after each run.
 
@@ -19,7 +19,7 @@ Make sure it’s enabled in `~/.openclaw/openclaw.json`:
 {
   "plugins": {
     "entries": {
-      "memos-cloud-memory": { "enabled": true }
+      "memos-cloud-openclaw-plugin": { "enabled": true }
     }
   }
 }
@@ -33,9 +33,9 @@ Example `~/.openclaw/openclaw.json`:
 {
   "plugins": {
     "entries": {
-      "memos-cloud-memory": { "enabled": true }
+      "memos-cloud-openclaw-plugin": { "enabled": true }
     },
-    "load": { "paths": ["/Users/shiuing/Desktop/funcode/memos-playground-openclaw-plugin"] }
+    "load": { "paths": ["/path/to/memos-cloud-openclaw-plugin"] }
   }
 }
 ```
@@ -49,7 +49,7 @@ Restart the gateway after config changes.
 - `MEMOS_CONVERSATION_ID` (optional override)
 
 ## Optional Plugin Config
-In `plugins.entries.memos-cloud-memory.config`:
+In `plugins.entries.memos-cloud-openclaw-plugin.config`:
 ```json
 {
   "baseUrl": "https://memos.memtensor.cn/api/openmem/v1",

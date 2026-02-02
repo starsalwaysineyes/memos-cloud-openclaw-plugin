@@ -1,4 +1,4 @@
-# MemOS Cloud Memory（OpenClaw Lifecycle 插件）
+# MemOS Cloud OpenClaw Plugin（Lifecycle 插件）
 
 这是一个最小可用的 OpenClaw lifecycle 插件，功能是：
 - **召回记忆**：在每轮对话前从 MemOS Cloud 检索记忆并注入上下文
@@ -21,7 +21,7 @@ openclaw gateway restart
 {
   "plugins": {
     "entries": {
-      "memos-cloud-memory": { "enabled": true }
+      "memos-cloud-openclaw-plugin": { "enabled": true }
     }
   }
 }
@@ -35,9 +35,9 @@ openclaw gateway restart
 {
   "plugins": {
     "entries": {
-      "memos-cloud-memory": { "enabled": true }
+      "memos-cloud-openclaw-plugin": { "enabled": true }
     },
-    "load": { "paths": ["/Users/shiuing/Desktop/funcode/memos-playground-openclaw-plugin"] }
+    "load": { "paths": ["/path/to/memos-cloud-openclaw-plugin"] }
   }
 }
 ```
@@ -51,7 +51,7 @@ openclaw gateway restart
 - `MEMOS_CONVERSATION_ID`（可选覆盖）
 
 ## 可选插件配置
-在 `plugins.entries.memos-cloud-memory.config` 中设置：
+在 `plugins.entries.memos-cloud-openclaw-plugin.config` 中设置：
 ```json
 {
   "baseUrl": "https://memos.memtensor.cn/api/openmem/v1",

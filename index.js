@@ -118,8 +118,8 @@ function truncate(text, maxLen) {
 }
 
 export default {
-  id: "memos-cloud-memory",
-  name: "MemOS Cloud Memory",
+  id: "memos-cloud-openclaw-plugin",
+  name: "MemOS Cloud OpenClaw Plugin",
   description: "MemOS Cloud recall + add memory via lifecycle hooks",
   kind: "lifecycle",
 

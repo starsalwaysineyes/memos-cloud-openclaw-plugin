@@ -45,6 +45,18 @@ openclaw gateway restart
 
 ## 环境变量
 > 若进程环境变量未设置，会尝试从 `~/.openclaw/.env` 读取。
+
+**配置位置**
+- 文件：`~/.openclaw/.env`
+- 每行格式：`KEY=value`
+
+**最小配置**
+```env
+MEMOS_API_KEY=YOUR_TOKEN
+MEMOS_USER_ID=openclaw-user
+```
+
+**可选配置**
 - `MEMOS_BASE_URL`（默认 `https://memos.memtensor.cn/api/openmem/v1`）
 - `MEMOS_API_KEY`（必填，Token 认证）—— 获取地址：https://memos-dashboard.openmem.net/cn/apikeys/
 - `MEMOS_USER_ID`（可选，默认 `openclaw-user`）

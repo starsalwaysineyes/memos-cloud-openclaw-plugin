@@ -42,7 +42,19 @@ Example `~/.openclaw/openclaw.json`:
 Restart the gateway after config changes.
 
 ## Environment Variables
-> Also supports reading from `~/.openclaw/.env` when not present in the process env.
+> If not set in the process env, the plugin reads `~/.openclaw/.env`.
+
+**Where to configure**
+- File: `~/.openclaw/.env`
+- Each line is `KEY=value`
+
+**Minimal config**
+```env
+MEMOS_API_KEY=YOUR_TOKEN
+MEMOS_USER_ID=openclaw-user
+```
+
+**Optional config**
 - `MEMOS_BASE_URL` (default: `https://memos.memtensor.cn/api/openmem/v1`)
 - `MEMOS_API_KEY` (required; Token auth) — get it at https://memos-dashboard.openmem.net/cn/apikeys/
 - `MEMOS_USER_ID` (optional; default: `openclaw-user`)
